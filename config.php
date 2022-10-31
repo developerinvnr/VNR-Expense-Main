@@ -21,4 +21,5 @@ $con=mysql_connect(HOST,USER,PASS,true) or die(mysql_error());
 $exprodb=mysql_select_db(dbexpro,$con) or die(mysql_error());
 mysql_query("SET NAMES utf8");
 date_default_timezone_set('Asia/Kolkata');
+
 ?>

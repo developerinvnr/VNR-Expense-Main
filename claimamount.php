@@ -64,9 +64,9 @@ function ResultFit()
  window.location="claimamount.php?act=resultfit&uc="+uc+"&un="+un+"&ct="+ct+"&cs="+cs+"&fy="+fy;
 }
 
-function ResultExp(uc,un,ct,cs,fy)
+function ResultExp(n,uc,un,ct,cs,fy)
 {
- var win = window.open("claimamountexp.php?act=resultexp&uc="+uc+"&un="+un+"&ct="+ct+"&cs="+cs+"&fy="+fy,"ExpForm","menubar=no,scrollbars=yes,resizable=no,directories=no,width=50,height=50"); 
+ var win = window.open("claimamountexp.php?act=resultexp&uc="+uc+"&un="+un+"&ct="+ct+"&cs="+cs+"&fy="+fy+"&ni="+n,"ExpForm","menubar=no,scrollbars=yes,resizable=no,directories=no,width=50,height=50"); 
 }
 
 function FunODiv(i)
@@ -81,7 +81,7 @@ function FunODiv(i)
  <div class="row  d-flex justify-content-around">
   <div class="col-md-11">
 	<div class="row filrow font-weight-bold">
-	  <div class="col-md-2">Code:<select class="form-control" id="userc" onChange="FunU(this.value,1)"><?php $u=mysql_query("select EmployeeID,EmpCode,Fname,Sname,Lname from hrm_employee where EmpStatus!='De' AND CompanyId=".$_SESSION['CompanyId']." AND Fname!='' AND EmpCode!='' AND EmpCode!=0 order by EmpCode asc", $con2); ?>
+	  <div class="col-md-1">Code:<select class="form-control" id="userc" onChange="FunU(this.value,1)"><?php $u=mysql_query("select EmployeeID,EmpCode,Fname,Sname,Lname from hrm_employee where EmpStatus!='De' AND CompanyId=".$_SESSION['CompanyId']." AND Fname!='' AND EmpCode!='' AND EmpCode!=0 order by EmpCode asc", $con2); ?>
 							<?php if(mysql_num_rows($u)>1){?><option value="ALL" <?php if(isset($_REQUEST['uc']) && $_REQUEST['uc']=='ALL'){echo 'selected';} ?>>ALL</option><?php }
 				      		while($us=mysql_fetch_assoc($u)){ ?>
 				      		<option value="<?=$us['EmployeeID']?>" <?php if(isset($_REQUEST['uc']) && $_REQUEST['uc']==$us['EmployeeID']){echo 'selected';} ?>><?=$us['EmpCode'].' - '.$us['Fname'].' '.$us['Sname'].' '.$us['Lname']?></option>
@@ -116,7 +116,11 @@ function FunODiv(i)
 	  
 	  <?php if($_REQUEST['act']=='resultfit'){ ?>
 	  <div class="col-md-1"><br>
-		<button class="form-control btn-primary" onclick="ResultExp('<?=$_REQUEST['uc']?>','<?=$_REQUEST['un']?>','<?=$_REQUEST['ct']?>','<?=$_REQUEST['cs']?>',<?=$_REQUEST['fy']?>)" style="cursor:pointer;">Export</button>
+		<button class="form-control btn-primary" onclick="ResultExp(1,'<?=$_REQUEST['uc']?>','<?=$_REQUEST['un']?>','<?=$_REQUEST['ct']?>','<?=$_REQUEST['cs']?>',<?=$_REQUEST['fy']?>)" style="cursor:pointer;">Export</button>
+	  </div>
+	  
+	  <div class="col-md-1"><br>
+		<button class="form-control btn-primary" onclick="ResultExp(2,'<?=$_REQUEST['uc']?>','<?=$_REQUEST['un']?>','<?=$_REQUEST['ct']?>','<?=$_REQUEST['cs']?>',<?=$_REQUEST['fy']?>)" style="cursor:pointer;">Export-2</button>
 	  </div>
 	  <?php } ?>
 		      	

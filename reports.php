@@ -33,7 +33,20 @@ function getUser($u){
 	<div class="col-md-2">Claim Type:<select class="form-control" id="claimTypefr">
 	<option value="ALL">ALL</option>
 	<?php $c=mysql_query("select ClaimId,ClaimName from claimtype where ClaimStatus='A' group by ClaimId");
-		  while($cid=mysql_fetch_assoc($c)){ ?><option value="<?=$cid['ClaimId']?>" <?php if(isset($_REQUEST['ct']) && $_REQUEST['ct']==$cid['ClaimId']){echo 'selected';} ?>><?=$cid['ClaimName']?></option><?php	} ?></select>
+		  while($cid=mysql_fetch_assoc($c)){ ?><option value="<?=$cid['ClaimId']?>" <?php if(isset($_REQUEST['ct']) && $_REQUEST['ct']==$cid['ClaimId']){echo 'selected';} ?>><?=$cid['ClaimName']?></option><?php } ?>
+		  
+	<?php if($_SESSION['EmployeeID']==11)
+	     { 
+	    
+	    $c1=mysql_query("select ClaimId,ClaimName from claimtype where ClaimStatus='B' group by ClaimId");
+		  while($cid1=mysql_fetch_assoc($c1)){ ?><option value="<?=$cid1['ClaimId']?>" <?php if(isset($_REQUEST['ct']) && $_REQUEST['ct']==$cid1['ClaimId']){echo 'selected';} ?>><?=$cid1['ClaimName']?></option><?php } ?>
+		  
+		  <option value="1920" <?php if(isset($_REQUEST['ct']) && $_REQUEST['ct']==1920){echo 'selected';} ?>>DA@ In/Out</option>
+		  
+		  
+	<?php } //if($_SESSION['EmployeeID']==11) ?>	  
+		  
+		  </select>
 	</div>
 	<div class="col-md-2">Claim Status:<select class="form-control" id="claimStatusfr">
 	 <option value="Submitted" <?php if($_REQUEST['cs']=='Submitted'){echo 'selected';} ?>>Submitted</option>
@@ -113,7 +126,11 @@ function getUser($u){
 			$ucond="e.CrBy=".$_REQUEST['u'];
 		}else{ $ucond="1=1"; }
 
-		if(isset($_REQUEST['ct']) && $_REQUEST['ct']!='' && $_REQUEST['ct']!='ALL'){
+		if(isset($_REQUEST['ct']) && $_REQUEST['ct']=='1920')
+		{
+		  $ctcond="(e.ClaimId=19 OR e.ClaimId=20)"; 
+		    
+		}else if(isset($_REQUEST['ct']) && $_REQUEST['ct']!='' && $_REQUEST['ct']!='ALL' && $_REQUEST['ct']!='1920'){
 			$ctcond="e.ClaimId='".$_REQUEST['ct']."'";
 		}else{ $ctcond="1=1"; }
 
@@ -161,8 +178,15 @@ function getUser($u){
 		//if($f>='2022-04-01'){$y=4;}else{$y=3;}
 	    //$q="SELECT e.*, c.ClaimName, h.Fname,h.Sname,h.Lname FROM `y".$_SESSION['FYearId']."_expenseclaims` e, claimtype c, ".dbemp.".hrm_employee h where h.EmployeeID=e.CrBy and e.ClaimYearId='".$y."' and (c.ClaimId=e.ClaimId or e.ClaimId=0) and ".$ucond." and ".$ctcond." and e.ClaimStatus!='Deactivate' and ".$cscond." and ".$dtcond." group by e.ExpId order by e.BillDate ASC";
 
+       if($_REQUEST['ct']=='1920')
+       {
+           
+        $q="SELECT e.*, sum(FilledTAmt) as FillAmt, sum(VerifyTAmt) as VeriAmt, sum(ApprTAmt) as AppAmt, sum(FinancedTAmt) as PaidAmt, c.ClaimName FROM `y".$_SESSION['FYearId']."_expenseclaims` e, claimtype c where e.ClaimYearId='".$_SESSION['FYearId']."' and (c.ClaimId=e.ClaimId or e.ClaimId=0) and ".$ucond." and ".$ctcond." and e.ClaimStatus!='Deactivate' and ".$cscond." and ".$dtcond." group by e.CrBy, e.ClaimMonth order by e.BillDate ASC";  
+       }
+       else
+       {
 	    $q="SELECT e.*, c.ClaimName FROM `y".$_SESSION['FYearId']."_expenseclaims` e, claimtype c where e.ClaimYearId='".$_SESSION['FYearId']."' and (c.ClaimId=e.ClaimId or e.ClaimId=0) and ".$ucond." and ".$ctcond." and e.ClaimStatus!='Deactivate' and ".$cscond." and ".$dtcond." group by e.ExpId order by e.BillDate ASC";
-	    
+       } 
 	    //echo $q;
 	    
 	    $seleq=mysql_query($q);
@@ -179,12 +203,25 @@ function getUser($u){
 		  <?php $u=mysql_query("SELECT Fname,Sname,Lname FROM `hrm_employee` where EmployeeID=".$exp['CrBy'],$con2); $un=mysql_fetch_assoc($u); ?>
 		  
 		  <td><?=$un['Fname'].' '.$un['Sname'].' '.$un['Lname']?></td>
-		  <td><?=date("d-m-Y",strtotime($exp['CrDate']))?></td>
+		  
+		  
+		  <?php if($_REQUEST['ct']=='1920'){ ?>
+		  
+		  <td></td>
+		  <td></td>
+		  <td><?php echo $exp['FillAmt'];?></td>
+		  <td><?php echo $exp['VeriAmt'];?></td>
+		  <td><?php echo $exp['AppAmt'];?></td>
+		  <td><?php echo $exp['PaidAmt'];?></td>
+		 
+		 <?php } else { ?>
+		   <td><?=date("d-m-Y",strtotime($exp['CrDate']))?></td>
 		  <td><?=date("d-m-Y",strtotime($exp['BillDate']))?></td>
 		  <td><?php if($exp['FilledTAmt']!=0 && $exp['FilledBy']>0 && $exp['FilledDate']!='0000-00-00'){echo $exp['FilledTAmt'];}?></td>
 		  <td><?php if($exp['VerifyTAmt']!=0 && $exp['VerifyBy']>0 && $exp['VerifyDate']!='0000-00-00'){echo $exp['VerifyTAmt'];}?></td>
 		  <td><?php if($exp['ApprTAmt']!=0 && $exp['ApprBy']>0 && $exp['ApprDate']!='0000-00-00'){echo $exp['ApprTAmt'];}?></td>
 		  <td><?php if($exp['FinancedTAmt']!=0 && $exp['FinancedBy']>0 && $exp['FinancedDate']!='0000-00-00'){echo $exp['FinancedTAmt'];}?></td>
+		 <?php } ?> 
 		
 		 <?php /*
 		  <td><?php if($exp['FilledTAmt']!=0){echo $exp['FilledTAmt'];}?></td>

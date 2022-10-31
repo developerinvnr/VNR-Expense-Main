@@ -64,6 +64,32 @@ function ExpRep(n,action,chkval,v)
 }
 
 </script>
+
+
+<?php 
+/*
+  $eMM=mysql_query("select ExpId from y4_expenseclaims where ClaimId=7 and `ClaimStatus`='Filled' and (`FilledTAmt`=0 OR `FilledTAmt`='')"); 
+  $roweMM=mysql_num_rows($eMM); 
+  if($roweMM>0)
+  {
+   
+    while($reM=mysql_fetch_assoc($eMM))
+    {
+     $sAmt=mysql_query("select SUM(FilledTAmt) as TotalAmt from y4_24_wheeler_entry where Totalkm>0 AND ExpId=".$reM['ExpId']);    
+	 $rAmt=mysql_fetch_assoc($sAmt); 
+	 if($rAmt['TotalAmt']>0)
+	 {
+	  $qry=mysql_query("update y4_expenseclaims set FilledTAmt='".$rAmt['TotalAmt']."', VerifyTAmt='".$rAmt['TotalAmt']."', ApprTAmt='".$rAmt['TotalAmt']."', FinancedTAmt='".$rAmt['TotalAmt']."' where ClaimId=7 AND ExpId=".$reM['ExpId']." AND ClaimStatus='Filled' and (`FilledTAmt`=0 OR `FilledTAmt`='')");
+     }
+	}
+  
+  }
+
+*/ 
+
+?>
+
+
 <div class="col-md-11 h-100" style="border-left:5px solid #d9d9d9;">
 <!--<link href="dt_bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">-->
 <link href="dt_css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">

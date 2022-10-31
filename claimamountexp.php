@@ -14,10 +14,6 @@ function getUser($u){
 	return $un['Fname'].' '.$un['Sname'].' '.$un['Lname'];
 }
 
-
-if($_REQUEST['act']=='resultexp')
-{
-
 function moneyFormatIndia($num) {
     $explrestunits = "" ;
     if(strlen($num)>3) {
@@ -40,20 +36,25 @@ function moneyFormatIndia($num) {
     return $thecash; // writes the final format where $currency is the currency symbol.
 }
 
- if($_REQUEST['uc']=='ALL'){ $xlsN='ALL'; }
- else{ $u=mysql_query("SELECT Fname,Sname,Lname FROM `hrm_employee` where EmployeeID=".$_REQUEST['uc'],$con2); 
-       $un=mysql_fetch_assoc($u); $xlsN=$un['Fname'].'_'.$un['Sname'].'_'.$un['Lname']; }
- if($_REQUEST['ct']=='ALL'){ $xlsT='ALL'; }
- else{ $ct=mysql_query("select ClaimName from claimtype where ClaimId=".$_REQUEST['ct']);
-	   $cid=mysql_fetch_assoc($ct); $xlsT=$cid['ClaimName']; } 
-	   
- $sqy=mysql_query("select y1,y2 from financialyear where YearId=".$_REQUEST['fy']); $rqy=mysql_fetch_assoc($sqy);
- $y=$rqy['y1'].'-'.$rqy['y2']; 	   
- 
- $xls_filename = 'ClaimAmt_'.$y.'_'.$xlsN.'_'.$xlsT.'.xls';
- header("Content-Type: application/xls");
- header("Content-Disposition: attachment; filename=$xls_filename");
- header("Pragma: no-cache"); header("Expires: 0"); $sep = "\t"; 
+if($_REQUEST['uc']=='ALL'){ $xlsN='ALL'; }
+else{ $u=mysql_query("SELECT Fname,Sname,Lname FROM `hrm_employee` where EmployeeID=".$_REQUEST['uc'],$con2); 
+   $un=mysql_fetch_assoc($u); $xlsN=$un['Fname'].'_'.$un['Sname'].'_'.$un['Lname']; }
+if($_REQUEST['ct']=='ALL'){ $xlsT='ALL'; }
+else{ $ct=mysql_query("select ClaimName from claimtype where ClaimId=".$_REQUEST['ct']);
+   $cid=mysql_fetch_assoc($ct); $xlsT=$cid['ClaimName']; } 
+   
+$sqy=mysql_query("select y1,y2 from financialyear where YearId=".$_REQUEST['fy']); $rqy=mysql_fetch_assoc($sqy);
+$y=$rqy['y1'].'-'.$rqy['y2']; 	   
+
+$xls_filename = 'ClaimAmt_'.$y.'_'.$xlsN.'_'.$xlsT.'.xls';
+header("Content-Type: application/xls");
+header("Content-Disposition: attachment; filename=$xls_filename");
+header("Pragma: no-cache"); header("Expires: 0"); $sep = "\t";    
+
+
+if($_REQUEST['act']=='resultexp' && $_REQUEST['ni']==1)
+{
+
  echo "Month\t==>";
  
  if($_REQUEST['cs']=='Filled' OR $_REQUEST['cs']=='ALL'){ echo "\tFilled"; } 
@@ -81,7 +82,7 @@ function moneyFormatIndia($num) {
   if($_REQUEST['cs']=='Verified' OR $_REQUEST['cs']=='ALL'){ $stotV=mysql_query("SELECT SUM(VerifyTAmt) as VTot FROM `y".$_REQUEST['fy']."_expenseclaims` WHERE `ClaimMonth`='".$j."' AND FilledOkay=1 AND `ClaimYearId`='".$_REQUEST['fy']."' AND ".$qryu." AND ".$qryct." AND ClaimStatus!='Deactivate' AND VerifyBy>0"); $rtotV=mysql_fetch_assoc($stotV); $MonyV=moneyFormatIndia($rtotV['VTot']); 
   $schema_insert .= $MonyV.$sep; }
   
-  if($_REQUEST['cs']=='Verified' OR $_REQUEST['cs']=='ALL'){ $stotA=mysql_query("SELECT SUM(ApprTAmt) as ATot FROM `y".$_REQUEST['fy']."_expenseclaims` WHERE `ClaimMonth`='".$j."' AND FilledOkay=1 AND `ClaimYearId`='".$_REQUEST['fy']."' AND ".$qryu." AND ".$qryct." AND ClaimStatus!='Deactivate' AND ApprBy>0"); $rtotA=mysql_fetch_assoc($stotA); $MonyA=moneyFormatIndia($rtotA['ATot']); 
+  if($_REQUEST['cs']=='Approved' OR $_REQUEST['cs']=='ALL'){ $stotA=mysql_query("SELECT SUM(ApprTAmt) as ATot FROM `y".$_REQUEST['fy']."_expenseclaims` WHERE `ClaimMonth`='".$j."' AND FilledOkay=1 AND `ClaimYearId`='".$_REQUEST['fy']."' AND ".$qryu." AND ".$qryct." AND ClaimStatus!='Deactivate' AND ApprBy>0"); $rtotA=mysql_fetch_assoc($stotA); $MonyA=moneyFormatIndia($rtotA['ATot']); 
   $schema_insert .= $MonyA.$sep; }
   
   if($_REQUEST['cs']=='Financed' OR $_REQUEST['cs']=='ALL'){ $stotFi=mysql_query("SELECT SUM(FinancedTAmt) as FiTot FROM `y".$_REQUEST['fy']."_expenseclaims` WHERE `ClaimMonth`='".$j."' AND FilledOkay=1 AND `ClaimYearId`='".$_REQUEST['fy']."' AND ".$qryu." AND ".$qryct." AND ClaimStatus!='Deactivate' AND FinancedBy>0"); $rtotFi=mysql_fetch_assoc($stotFi); $MonyFi=moneyFormatIndia($rtotFi['FiTot']); 
@@ -160,6 +161,56 @@ function moneyFormatIndia($num) {
  
  
 
-} //if($_REQUEST['act']=='resultexp')
+} //if($_REQUEST['act']=='resultexp' && $_REQUEST['ni']==1)
+
+else if($_REQUEST['act']=='resultexp' && $_REQUEST['ni']==2)
+{
+ 
+ echo "Sn\tEmployee Name\tEmpCode\tDepartment\tMonth\tTotal Claim\tClaim Amount\tClaim Date\tVerifiy Amount\tVerirfy Date\tApproved Amount\tApproved Date\tFinance Amount\tFinance Date\tAdvance Amount\tPaid Amount\tPaid Date";
+ print("\n");
+ 
+ if($_REQUEST['uc']=='ALL'){ $qryu='1=1'; $qry2u='1=1'; }
+ else{ $qryu='CrBy='.$_REQUEST['uc']; $qry2u='EmployeeID='.$_REQUEST['uc']; }
+ 
+ $sql=mysql_query("SELECT * FROM `y".$_REQUEST['fy']."_monthexpensefinal` WHERE YearId=".$_REQUEST['fy']." AND Status='Closed' AND Total_Claim>0 AND Claim_Amount>0 AND ".$qry2u." order by EmployeeID,id,Month"); 
+ $no=1;
+ while($res=mysql_fetch_assoc($sql))
+ {
+ 
+  $sqlE=mysql_query("select EmpCode,Fname,Sname,Lname,DepartmentCode from hrm_employee e left join hrm_employee_general g ON g.EmployeeID=e.EmployeeID left join hrm_department d on g.DepartmentId=d.DepartmentId where e.EmployeeID=".$res['EmployeeID'], $con2); $resE=mysql_fetch_assoc($sqlE); 
+ 
+  $schema_insert = "";
+  $schema_insert .= $no.$sep;
+  $schema_insert .= $resE['Fname'].' '.$resE['Sname'].' '.$resE['Lname'].$sep;
+  $schema_insert .= $resE['EmpCode'].$sep;
+  $schema_insert .= $resE['DepartmentCode'].$sep;
+  
+  $schema_insert .= date("F",strtotime(date("Y-".$res['Month']."-d"))).$sep;	
+  $schema_insert .= $res['Total_Claim'].$sep;
+  $schema_insert .= floatval($res['Claim_Amount']).$sep;
+  $schema_insert .= $res['DateOfSubmit'].$sep;
+  
+  $schema_insert .= floatval($res['Verified_Amount']).$sep;
+  $schema_insert .= $res['Verified_Date'].$sep;
+  
+  $schema_insert .= floatval($res['Approved_Amount']).$sep;
+  $schema_insert .= $res['Approved_Date'].$sep;
+  
+  $schema_insert .= floatval($res['Finance_Amount']).$sep;
+  $schema_insert .= $res['Finance_Date'].$sep;
+  
+  $schema_insert .= floatval($res['Fin_AdvancePay']).$sep;
+  $schema_insert .= floatval($res['Fin_PayAmt']).$sep;
+  $schema_insert .= $res['Fin_PayDate'].$sep;
+  
+  $schema_insert = str_replace($sep."$", "", $schema_insert);
+  $schema_insert = preg_replace("/\r\n|\n\r|\n|\r/", " ", $schema_insert);
+  $schema_insert .= "\t";
+  print(trim($schema_insert));
+  print "\n";
+  $no++;
+ }
+ 
+} //else if($_REQUEST['act']=='resultexp' && $_REQUEST['ni']==2)
 
 ?>

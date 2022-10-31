@@ -1,6 +1,7 @@
 <?php session_start();
 
 include "header.php";
+date_default_timezone_set('Asia/Calcutta');
 
 ?><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style type="text/css">
@@ -50,8 +51,8 @@ include "header.php";
                     <td>
 					
 <?php
-$table=dbemp.".`hrm_employee_eligibility`";
-$seluq=mysql_query("SELECT DA_Outside_Hq, DA_Inside_Hq FROM ".$table." where Status='A' AND EmployeeID=".$_SESSION['EmployeeID']);
+$table=".`hrm_employee_eligibility`";
+$seluq=mysql_query("SELECT DA_Outside_Hq, DA_Inside_Hq FROM ".$table." where Status='A' AND EmployeeID=".$_SESSION['EmployeeID'], $con2);
 $rElig=mysql_fetch_assoc($seluq);
 
 $str1=$rElig['DA_Inside_Hq']; $DAInside=preg_replace('/[^0-9]/', '', $str1);

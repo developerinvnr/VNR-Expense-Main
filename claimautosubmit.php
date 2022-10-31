@@ -44,7 +44,7 @@ if(date("d") == 14){
 
 		//this code for moving the filled claims to verifying stage...................................
 
-		$up=mysql_query("UPDATE y".$YearId."_expenseclaims SET ClaimAtStep=3, VerifyTAmt=FilledTAmt, ApprTAmt=FilledTAmt, FinancedTAmt=FilledTAmt where FilledOkay=1 and ClaimMonth='".$lastmonth."' and ClaimYearId='".$YearId."' and ClaimStatus='Filled'".$crCond);
+		//*$up=mysql_query("UPDATE y".$YearId."_expenseclaims SET ClaimAtStep=3, VerifyTAmt=FilledTAmt, ApprTAmt=FilledTAmt, FinancedTAmt=FilledTAmt where FilledOkay=1 and ClaimMonth='".$lastmonth."' and ClaimYearId='".$YearId."' and ClaimStatus='Filled'".$crCond);
 
 		// ....................................................................................................
 
@@ -54,7 +54,7 @@ if(date("d") == 14){
 
 		//this code for closing months........................................................................
 
-		mysql_query("UPDATE y".$YearId."_monthexpensefinal SET Status='Closed' where  Month='".$lastmonth."' and YearId='".$YearId."'".$eidCond);
+		//*mysql_query("UPDATE y".$YearId."_monthexpensefinal SET Status='Closed' where  Month='".$lastmonth."' and YearId='".$YearId."'".$eidCond);
 
 		// ....................................................................................................
 
@@ -68,7 +68,7 @@ if(date("d") == 14){
 		$selexp=mysql_query("select ExpId from y".$YearId."_expenseclaims where ClaimStatus='Filled' and ClaimMonth='".$lastmonth."' and ClaimYearId='".$YearId."'".$crCond);
 		while($selexpd=mysql_fetch_assoc($selexp)){
 			
-			mysql_query("update y".$YearId."_y".$YearId."_expenseclaimsdetails set VerifierEditAmount=Amount where ExpId='".$selexpd['ExpId']."'");
+			//*mysql_query("update y".$YearId."_y".$YearId."_expenseclaimsdetails set VerifierEditAmount=Amount where ExpId='".$selexpd['ExpId']."'");
 		}
 
 		// ....................................................................................................

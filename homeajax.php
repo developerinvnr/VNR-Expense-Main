@@ -113,21 +113,26 @@ elseif($_POST['act']=='submittoapprover')
              $rEn=mysql_fetch_assoc($sEn); $Ename=$rEn['Fname'].' '.$rEn['Sname'].' '.$rEn['Lname'];
 			 if($m==1){$mnt='January';}elseif($m==2){$mnt='February';}elseif($m==3){$mnt='March';}elseif($m==4){$mnt='April';}elseif($m==5){$mnt='May';}elseif($m==6){$mnt='June';}elseif($m==7){$mnt='July';}elseif($m==8){$mnt='August';}elseif($m==9){$mnt='September';}elseif($m==10){$mnt='October';}elseif($m==11){$mnt='November';}elseif($m==12){$mnt='December';} 
 			 
-		     $email_to = $rRn['EmailId_Vnr'];
-             $email_from='admin@vnrseeds.co.in';
+		     //$email_to = $rRn['EmailId_Vnr'];
+             //$email_from='admin@vnrseeds.co.in';
              $email_subject = "Xeasy: Pending for approval (Month - ".$mnt." , Emp - ".$Ename.")";
-             $headers = "From: ".$email_from."\r\n"; 
-             $semi_randa = md5(time()); 
-             $headers .= "MIME-Version: 1.0\r\n";
-             $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+             //$headers = "From: $email_from \r\n"; 
+             //$headers .= "MIME-Version: 1.0\r\n";
+             //$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
 			 $email_message .="<html><body>Dear Team, <br><br>\r\n\n";
              $email_message .=" Please take necessary action to pending claims (approval level) for your team member ".$Ename.". For details go on xeasy.<br><br>\r\n\n";
 			 $email_message .="Regards<br>\r\n";
              $email_message .="Admin (Xeasy)<br>\r\n";
 			 $email_message .="</body></html>\n\n";
-             $ok = @mail($email_to, $email_subject, $email_message, $headers); 
+             //$ok = @mail($email_to, $email_subject, $email_message, $headers); 
              
-             /**************/
+             $subject=$email_subject;
+             $body=$email_message;
+             $email_to=$rRn['EmailId_Vnr'];
+             require 'vendor/mail_admin.php';
+             
+             
+             /**************
              $email_to2 = 'ajaykumar.dewangan@vnrseeds.in';
              $email_from2='admin@vnrseeds.co.in';
              $email_subject2 = "Xeasy: Pending for approval (Month - ".$mnt." , Emp - ".$Ename.") - Rep".$rRn['EmailId_Vnr'];

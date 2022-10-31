@@ -104,6 +104,8 @@ $uploadfiles = json_decode($Text);
 	}
 	
 
+   /*
+
 	$uYTemp = "documents/".$_SESSION['FYearId'] ."/".$user."/"."temp/";
 	$uY = "documents/".$_SESSION['FYearId'] ."/".$user."/";
 	
@@ -113,13 +115,13 @@ $uploadfiles = json_decode($Text);
 	$uYTemp3_old = "documents/4/".$user."/"."temp/";
 	$uY3_old = "documents/4/".$user."/";
 	
-	/****************/
+	/****************
 	$u2YTemp = "http://45.124.144.101/xeasyfile/".$_SESSION['FYearId'] ."/".$user."/"."temp/";
 	$u2Y = "http://45.124.144.101/xeasyfile/".$_SESSION['FYearId'] ."/".$user."/";
 	
-	$u2YTemp_phone = "https://45.124.144.101/xeasyfile/".$_SESSION['FYearId']."/".$user."/"."temp/";
+	$u2YTemp_phone = "https://45.124.144.101/xeasyfile/".$_SESSION['FYearId'] ."/".$user."/"."temp/";
 	$u2Y_phone = "https://45.124.144.101/xeasyfile/".$_SESSION['FYearId'] ."/".$user."/";
-    /****************/
+    /****************
 
 	if(isset($_REQUEST['inpage']) && $_REQUEST['inpage']=='showclaim'){
 		$location=$uY;  $location2=$u2Y;  $location_old=$uY_old;
@@ -131,7 +133,45 @@ $uploadfiles = json_decode($Text);
 		$left='ok';
 	}
 
-
+    */
+    
+    /************* New New *******************************/
+	$oldY=$_SESSION['FYearId']-1;
+	
+	$loc_1="documents/".$_SESSION['FYearId'] ."/".$user."/";
+	$loc_1temp="documents/".$_SESSION['FYearId'] ."/".$user."/"."temp/";
+	
+	$loc_2="documents_old/".$_SESSION['FYearId'] ."/".$user."/";
+	$loc_2temp="documents_old/".$_SESSION['FYearId'] ."/".$user."/"."temp/";
+	
+	$loc_3="documents/".$oldY."/".$user."/";
+	$loc_3temp="documents/".$oldY."/".$user."/"."temp/";
+	
+	$loc_4 = "http://45.124.144.101/xeasyfile/".$_SESSION['FYearId'] ."/".$user."/";
+	$loc_4temp = "http://45.124.144.101/xeasyfile/".$_SESSION['FYearId'] ."/".$user."/"."temp/";
+	
+	$loc_5 = "https://45.124.144.101/xeasyfile/".$_SESSION['FYearId'] ."/".$user."/";
+	$loc_5temp = "https://45.124.144.101/xeasyfile/".$_SESSION['FYearId'] ."/".$user."/"."temp/";
+	
+	$loc_6 = "http://45.124.144.101/xeasyfile/".$oldY."/".$user."/";
+	$loc_6temp = "http://45.124.144.101/xeasyfile/".$oldY."/".$user."/"."temp/";
+	
+	$loc_7 = "https://45.124.144.101/xeasyfile/".$oldY."/".$user."/";
+	$loc_7temp = "https://45.124.144.101/xeasyfile/".$oldY."/".$user."/"."temp/";
+	
+	if(isset($_REQUEST['inpage']) && $_REQUEST['inpage']=='showclaim')
+	{
+	  $claim='uploaded';
+	  $Loc1=$loc_1; $Loc2=$loc_2; $Loc3=$loc_3; $Loc4=$loc_4; $Loc5=$loc_5; $Loc6=$loc_6; $Loc7=$loc_7; 
+	}
+	else
+	{   
+	  $claim='uploading'; $left='ok';
+	  $Loc1=$loc_1temp; $Loc2=$loc_2temp; $Loc3=$loc_3temp; $Loc4=$loc_4temp; $Loc5=$loc_5temp; 
+	  $Loc6=$loc_6temp; $Loc7=$loc_7temp; 
+	}
+    /************* New New *******************************/
+    
 
 	foreach ($uploadfiles as $key => $value) {
 		$name = explode( '.', $value );//echo $name[0];
@@ -139,12 +179,26 @@ $uploadfiles = json_decode($Text);
 		if($i==1){}
 		// echo 'div'.$i;
 		
-		
+		  /*
 		  if(file_exists($location.$value)){ $path=$location.$value; $loc=$location; } 
 	      elseif(file_exists($location_old.$value)){ $path=$location_old.$value; $loc=$location_old; }
 	      elseif(file_exists($location3_old.$value)){ $path=$location3_old.$value; $loc=$location3_old; }
 	      //elseif(file_exists($location_phone.$value)){ $path=$location_phone.$value; $loc=$location_phone; }
 	      else{ $path=$location2.$value; $loc=$location2; }
+	      */
+	      
+	      /************* New New *******************************/
+	      if(file_exists($Loc1.$value)){ $path=$Loc1.$value; $loc=$Loc1; } 
+          elseif(file_exists($Loc2.$value)){ $path=$Loc2.$value; $loc=$Loc2; } 
+          elseif(file_exists($Loc3.$value)){ $path=$Loc3.$value; $loc=$Loc3; } 
+	      elseif(file_exists($Loc4.$value)){ $path=$Loc4.$value; $loc=$Loc4; }
+	      elseif(file_exists($Loc5.$value)){ $path=$Loc5.$value; $loc=$Loc5; }
+	      elseif(file_exists($Loc6.$value)){ $path=$Loc6.$value; $loc=$Loc6; }
+	      elseif(file_exists($Loc7.$value)){ $path=$Loc7.$value; $loc=$Loc7; }
+          else{ $path=$Loc2.$value; $loc=$Loc2; }
+	      /************* New New *******************************/
+	      
+	      
 		
 		//echo 'aa='.$path;
 		

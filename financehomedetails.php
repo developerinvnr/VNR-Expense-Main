@@ -123,11 +123,13 @@ $from = 0;
 	 <?php 
 	 $curr_fyear = mysql_query("select YearId from financialyear where Year = '".$_SESSION["FYear"]."'");
 			$fyear = mysql_fetch_array($curr_fyear);
-			$url = "https://vnrseeds.co.in/focus-data/upload/".$_SESSION['CompanyId']."/".$fyear['YearId']."/".$mlist['Month']."/".$mlist['EmployeeID']."/".$_SESSION['EmployeeID'];	
+			$url = "https://vnrseeds.org/focus-data/upload/".$_SESSION['CompanyId']."/".$fyear['YearId']."/".$mlist['Month']."/".$mlist['EmployeeID']."/".$_SESSION['EmployeeID'];	
 
 		
 	 $name=getUser($mlist['EmployeeID']); $month=date('F', mktime(0,0,0,$mlist['Month'], 1, date('Y'))); ?>
 	 <button type="button" class="btn btn-sm btn-warning" onclick="closeClaimMonth('<?=$mlist['Month']?>','<?=$mlist['EmployeeID']?>','<?=$name?>','<?=$month?>','<?= $url?>')">Approval All Claim</button>
+	 
+	
 	</td>
    </tr>
    </form>						

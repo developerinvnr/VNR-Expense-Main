@@ -3,7 +3,7 @@
 error_reporting(0);
 session_start();
 include 'config.php';
-
+date_default_timezone_set('Asia/Calcutta');
 
 
 function compress($source, $destination, $quality) {

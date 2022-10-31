@@ -42,9 +42,6 @@ while($ress=mysql_fetch_array($sqls)){ $array_data[]=$ress['CostCenter']; } $sta
 }
 $maxDate="and CrDate>='2019-10-01' AND BillDate>='2019-10-01' ";
 $maxDatee="and e.CrDate>='2019-10-01' AND e.BillDate>='2019-10-01' ";
-
-
-
 ?>
     <div class="col-lg-1"></div>
     
@@ -55,40 +52,27 @@ $maxDatee="and e.CrDate>='2019-10-01' AND e.BillDate>='2019-10-01' ";
 	   <h5 style="box-shadow: 0px 0px 5px 0px #888 !important;background-color:white; padding: 6px;"><small class="font-weight-bold text-muted" style="font-size: 13px !important;">CLAIMS TO BE FILLED :</small>
 	   <?php $mn=date("Y-m-01",strtotime('-1 month', strtotime(date("Y-m-d")))); ?>
  
-	  <?php //$q_Ex2= "SELECT count(*) AS countT2 FROM y".$_SESSION['FYearId']."_expenseclaims e,  ".dbemp.".hrm_employee_general g where g.EmployeeID=e.CrBy and  e.ClaimStatus!='Deactivate' and e.ClaimStatus='Submitted' and g.CostCenter in (".$state_data.") and e.Rmk=1 and AttachTo=0"; $seleq_Ex2=mysql_query($q_Ex2);
-	  
-	  $q_Ex2= "SELECT count(*) AS countT2 FROM y".$_SESSION['FYearId']."_expenseclaims e where e.ClaimStatus!='Deactivate' and e.ClaimStatus='Submitted' and e.Rmk=1 and AttachTo=0"; $seleq_Ex2=mysql_query($q_Ex2);
-	  
+	  <?php $q_Ex2= "SELECT count(*) AS countT2 FROM y".$_SESSION['FYearId']."_expenseclaims e where e.ClaimStatus!='Deactivate' and e.ClaimStatus='Submitted' and e.Rmk=1 and AttachTo=0"; $seleq_Ex2=mysql_query($q_Ex2); //and g.CostCenter in (".$state_data.") 
              $rrs_Ex2 = mysql_fetch_assoc($seleq_Ex2); ?>
       <span class="btn btn-sm btn-outline-secondary font-weight-bold">H:&nbsp;<span class="badge badge-secondary" style="font-size: 10px;"><a href="home.php?&sts=Hold" style="color: white;">Hold (<?=$rrs_Ex2['countT2'];?>)</a></span></span>
  
       
-      <?php //$q_count = "SELECT e.ClaimStatus, count(*) AS Count FROM `y".$_SESSION['FYearId']."_expenseclaims`e, ".dbemp.".hrm_employee_general g where g.EmployeeID=e.CrBy and e.ClaimStatus!='Deactivate' and e.ClaimStatus='Draft' and g.CostCenter in (".$state_data.") and Filledokay!=2 and AttachTo=0"; 
-      
-      $q_count = "SELECT e.ClaimStatus, count(*) AS Count FROM `y".$_SESSION['FYearId']."_expenseclaims`e where e.ClaimStatus!='Deactivate' and e.ClaimStatus='Draft' and Filledokay!=2 and AttachTo=0"; 
+      <?php $q_count = "SELECT e.ClaimStatus, count(*) AS Count FROM `y".$_SESSION['FYearId']."_expenseclaims`e where e.ClaimStatus!='Deactivate' and e.ClaimStatus='Draft' and Filledokay!=2 and AttachTo=0"; //and g.CostCenter in (".$state_data.") 
       $seleq_month=mysql_query($q_count); $rrs = mysql_fetch_assoc($seleq_month); ?>
       <span class="btn btn-sm btn-outline-secondary font-weight-bold">Drft:&nbsp;<span class="badge badge-secondary" style="font-size: 10px;"><a href="home.php?&sts=Draft" style="color: white;">Draft (<?=$rrs['Count'];?>)</a></span></span>
 	  
 	  
-      <?php if($_SESSION['EmployeeID']==10 OR $_SESSION['EmployeeID']==51116){ //$q_count2 = "SELECT e.ClaimStatus, count(*) AS Count FROM `y".$_SESSION['FYearId']."_expenseclaims`e, ".dbemp.".hrm_employee_general g where g.EmployeeID=e.CrBy and e.ClaimStatus!='Deactivate' and e.ClaimStatus='Filled' and g.CostCenter in (".$state_data.") and Filledokay!=2 and AttachTo=0 and e.BillDate>='".$mn."'"; 
-      
-      $q_count2 = "SELECT e.ClaimStatus, count(*) AS Count FROM `y".$_SESSION['FYearId']."_expenseclaims`e where e.ClaimStatus!='Deactivate' and e.ClaimStatus='Filled' and Filledokay!=2 and AttachTo=0 and e.BillDate>='".$mn."'"; 
+      <?php if($_SESSION['EmployeeID']==10 OR $_SESSION['EmployeeID']==51116){ $q_count2 = "SELECT e.ClaimStatus, count(*) AS Count FROM `y".$_SESSION['FYearId']."_expenseclaims`e where e.ClaimStatus!='Deactivate' and e.ClaimStatus='Filled' and Filledokay!=2 and AttachTo=0 and e.BillDate>='".$mn."'"; //and g.CostCenter in (".$state_data.") 
       $seleq_month2=mysql_query($q_count2); $rrs2 = mysql_fetch_assoc($seleq_month2); ?>       	
       <span class="btn btn-sm btn-outline-success font-weight-bold">F:&nbsp;<span class="badge badge-success" style="font-size: 10px;"><a href="home.php?&sts=Filled" style="color: white;">Filled  <?php if($_SESSION['EmployeeID']!=8){?>(<?=$rrs2['Count'];?>)<?php } ?></a></span></span><?php  } ?>
 
 
-      <?php //$q_count3 = "SELECT e.ClaimStatus, count(*) AS Count FROM `y".$_SESSION['FYearId']."_expenseclaims`e, ".dbemp.".hrm_employee_general g where g.EmployeeID=e.CrBy and e.ClaimStatus!='Deactivate' and e.ClaimStatus='Submitted' and g.CostCenter in (".$state_data.") and e.Rmk=0 and AttachTo=0"; 
-      
-      $q_count3 = "SELECT e.ClaimStatus, count(*) AS Count FROM `y".$_SESSION['FYearId']."_expenseclaims`e where e.ClaimStatus!='Deactivate' and e.ClaimStatus='Submitted' and e.Rmk=0 and AttachTo=0";
-      
-      $seleq_month3=mysql_query($q_count3); $rrs3 = mysql_fetch_assoc($seleq_month3); ?>       	
+      <?php $q_count3 = "SELECT e.ClaimStatus, count(*) AS Count FROM `y".$_SESSION['FYearId']."_expenseclaims`e where e.ClaimStatus!='Deactivate' and e.ClaimStatus='Submitted' and e.Rmk=0 and AttachTo=0"; $seleq_month3=mysql_query($q_count3); $rrs3 = mysql_fetch_assoc($seleq_month3); //and g.CostCenter in (".$state_data.")  ?>       	
       <span class="btn btn-sm font-weight-bold sub" style="border-color: #c41a6a !important; color: #c41a6a;">S:&nbsp;<span class="badge badge-success" style="font-size: 10px; background-color: #c41a6a !important;"><a href="home.php?&sts=Submitted" style="color: white;"><!--Submitted--> Uploaded  (<?=$rrs3['Count'];?>)</a></span></span>
 
-     <?php //$q_Ex = "SELECT count(*) AS count FROM `y".$_SESSION['FYearId']."_expenseclaims` e,  ".dbemp.".hrm_employee_general g WHERE g.EmployeeID=e.CrBy and e.`ClaimYearId`='".$_SESSION['FYearId']."' and e.FilledOkay=2 and e.ClaimStatus!='Deactivate' and e.ClaimStatus!='Draft' and e.ClaimStatus='Filled' and g.CostCenter in (".$state_data.") and e.FilledBy>0 and e.AttachTo=0"; 
-     
-     $q_Ex = "SELECT count(*) AS count FROM `y".$_SESSION['FYearId']."_expenseclaims` e WHERE e.`ClaimYearId`='".$_SESSION['FYearId']."' and e.FilledOkay=2 and e.ClaimStatus!='Deactivate' and e.ClaimStatus!='Draft' and e.ClaimStatus='Filled' and e.FilledBy>0 and e.AttachTo=0";
-     
-     $seleq_Ex=mysql_query($q_Ex); $rrs_Ex = mysql_fetch_assoc($seleq_Ex); ?>
+     <?php $q_Ex = "SELECT count(*) AS count FROM `y".$_SESSION['FYearId']."_expenseclaims` e WHERE e.`ClaimYearId`='".$_SESSION['FYearId']."' and e.FilledOkay=2 and e.ClaimStatus!='Deactivate' and e.ClaimStatus!='Draft' and e.ClaimStatus='Filled' and e.FilledBy>0 and e.AttachTo=0"; $seleq_Ex=mysql_query($q_Ex); $rrs_Ex = mysql_fetch_assoc($seleq_Ex);
+     //and g.CostCenter in (".$state_data.") 
+     ?>
      <span class="btn btn-sm btn-outline-danger font-weight-bold">D:&nbsp;<span class="badge badge-danger" style="font-size: 10px;"><a href="home.php?&sts=Denied" style="color: white;">Denied (<?=$rrs_Ex['count'];?>)</a></span></span>  
      &nbsp;&nbsp; 
 	 
@@ -116,10 +100,7 @@ function Funve(vv,sts,t)
         }
         else{ $sts = "and e.ClaimStatus!='Deactivate' and e.ClaimStatus='Submitted' and e.Rmk=0 and AttachTo=0"; }
 
-  //$seleqe=mysql_query("SELECT e.CrBy, CASE WHEN e.ClaimId!=0 THEN BillDate WHEN e.ClaimId=0 THEN CrDate END AS finalDate  FROM `y".$_SESSION['FYearId']."_expenseclaims`e, ".dbemp.".hrm_employee_general g where g.EmployeeID=e.CrBy and e.ClaimStatus!='Deactivate' ". $sts." and g.CostCenter in (".$state_data.") GROUP BY e.CrBy ORDER BY e.CrBy ASC"); 
-  
-  $seleqe=mysql_query("SELECT e.CrBy, CASE WHEN e.ClaimId!=0 THEN BillDate WHEN e.ClaimId=0 THEN CrDate END AS finalDate  FROM `y".$_SESSION['FYearId']."_expenseclaims`e where e.ClaimStatus!='Deactivate' ". $sts." GROUP BY e.CrBy ORDER BY e.CrBy ASC"); 
-  
+  $seleqe=mysql_query("SELECT e.CrBy, CASE WHEN e.ClaimId!=0 THEN BillDate WHEN e.ClaimId=0 THEN CrDate END AS finalDate  FROM `y".$_SESSION['FYearId']."_expenseclaims`e where e.ClaimStatus!='Deactivate' ". $sts." GROUP BY e.CrBy ORDER BY e.CrBy ASC"); //and g.CostCenter in (".$state_data.")
   while($expe=mysql_fetch_assoc($seleqe))
   { 
 
@@ -143,9 +124,8 @@ function Funve(vv,sts,t)
         }
         else{ $sts = "and e.ClaimStatus!='Deactivate' and e.ClaimStatus='Submitted' and e.Rmk=0 and AttachTo=0"; }
 
-  //$seleqe=mysql_query("SELECT e.CrDate, CASE WHEN e.ClaimId!=0 THEN BillDate WHEN e.ClaimId=0 THEN CrDate END AS finalDate  FROM `y".$_SESSION['FYearId']."_expenseclaims` e, ".dbemp.".hrm_employee_general g where g.EmployeeID=e.CrBy and e.ClaimStatus!='Deactivate' ". $sts." and g.CostCenter in (".$state_data.") GROUP BY e.CrDate ORDER BY e.CrDate ASC"); 
-  
   $seleqe=mysql_query("SELECT e.CrDate, CASE WHEN e.ClaimId!=0 THEN BillDate WHEN e.ClaimId=0 THEN CrDate END AS finalDate  FROM `y".$_SESSION['FYearId']."_expenseclaims` e where e.ClaimStatus!='Deactivate' ". $sts." GROUP BY e.CrDate ORDER BY e.CrDate ASC"); 
+  //and g.CostCenter in (".$state_data.") 
   while($expe=mysql_fetch_assoc($seleqe))
   { 
 
@@ -177,16 +157,15 @@ function Funve(vv,sts,t)
 <?php
 
  if($ve>0 OR $vd>0 OR $_GET['sts']=='Submitted')
- {
+ { 
 
    $j=1; $totcount=0; $i=1;
    if($ve>0){ $sqr=' AND e.CrBy='.$ve;}else{$sqr='';}
    if($vd>0){ $sqr2=" AND e.CrDate='".$vd."'";}else{$sqr2='';}
 			  
-   //$q="SELECT e.*, CASE WHEN e.ClaimId!=0 THEN BillDate WHEN e.ClaimId = 0 THEN CrDate END AS finalDate FROM `y".$_SESSION['FYearId']."_expenseclaims` e, ".dbemp.".hrm_employee_general g where g.EmployeeID=e.CrBy and e.ClaimStatus!='Deactivate' ".$sts." and g.CostCenter in (".$state_data.") ".$sqr." ".$sqr2." group by e.ExpId order by finalDate, EmployeeID";
-   
-   $q="SELECT e.*, CASE WHEN e.ClaimId!=0 THEN BillDate WHEN e.ClaimId = 0 THEN CrDate END AS finalDate FROM `y".$_SESSION['FYearId']."_expenseclaims` e where e.ClaimStatus!='Deactivate' ".$sts."  ".$sqr." ".$sqr2." group by e.ExpId order by finalDate, EmployeeID";
-
+   $q="SELECT e.*, CASE WHEN e.ClaimId!=0 THEN BillDate WHEN e.ClaimId = 0 THEN CrDate END AS finalDate FROM `y".$_SESSION['FYearId']."_expenseclaims` e where e.ClaimStatus!='Deactivate' ".$sts." ".$sqr." ".$sqr2." group by e.ExpId order by finalDate, CrBy";
+   //and g.CostCenter in (".$state_data.")
+   //echo $q;
      $seleq=mysql_query($q);		
      while($exp=mysql_fetch_assoc($seleq))
      {

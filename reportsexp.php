@@ -10,12 +10,17 @@ if($_REQUEST['act']=='resultexp')
  header("Content-Type: application/xls");
  header("Content-Disposition: attachment; filename=$xls_filename");
  header("Pragma: no-cache"); header("Expires: 0"); $sep = "\t"; 
- echo "tSn\tClaim ID\tClaim Type\tApplied By\tUpload Date\tBill Date\tFilled Date\tClaimed\tVerified\tApproved\tPaid\tClaim Status";
+ echo "tSn\tClaim ID\tClaim Type\tEmployee\tEmpCode\tUpload Date\tBill Date\tFilled Date\tClaimed\tVerified\tApproved\tPaid\tPaid Date\tClaim Status\tClaim Month";
  print("\n");
  
  if(isset($_REQUEST['u']) && $_REQUEST['u']!='' && $_REQUEST['u']!='ALL')
  { $ucond="e.CrBy=".$_REQUEST['u'];}else{ $ucond="1=1"; }
- if(isset($_REQUEST['ct']) && $_REQUEST['ct']!='' && $_REQUEST['ct']!='ALL')
+ 
+ if(isset($_REQUEST['ct']) && $_REQUEST['ct']=='1920')
+ {
+  $ctcond="(e.ClaimId=19 OR e.ClaimId=20)"; 
+    
+ }else if(isset($_REQUEST['ct']) && $_REQUEST['ct']!='' && $_REQUEST['ct']!='ALL' && $_REQUEST['ct']!='1920')
  { $ctcond="e.ClaimId='".$_REQUEST['ct']."'"; }else{ $ctcond="1=1"; }
  if(isset($_REQUEST['cs']) && $_REQUEST['cs']!='' && $_REQUEST['cs']!='ALL')
  {
@@ -39,9 +44,19 @@ if($_REQUEST['act']=='resultexp')
    //$dtcond="e.BillDate between '".$f."' and '".$t."'";
  }else{ $dtcond="1=1"; }
  
- 
- $q="SELECT e.*, c.ClaimName, h.Fname,h.Sname,h.Lname FROM `y".$_SESSION['FYearId']."_expenseclaims` e, claimtype c, ".dbemp.".hrm_employee h where h.EmployeeID=e.CrBy and e.ClaimYearId='".$_SESSION['FYearId']."' and (c.ClaimId=e.ClaimId or e.ClaimId=0) and ".$ucond." and ".$ctcond." and e.ClaimStatus!='Deactivate' and ".$cscond." and ".$dtcond." group by e.ExpId order by e.BillDate ASC";	$seleq=mysql_query($q);
+       if($_REQUEST['ct']=='1920')
+       {
+           
+         $q="SELECT e.*, sum(FilledTAmt) as FillAmt, sum(VerifyTAmt) as VeriAmt, sum(ApprTAmt) as AppAmt, sum(FinancedTAmt) as PaidAmt, c.ClaimName,h.EmpCode,h.Fname,h.Sname,h.Lname FROM `y".$_SESSION['FYearId']."_expenseclaims` e, claimtype c, ".dbemp.".hrm_employee h where h.EmployeeID=e.CrBy and e.ClaimYearId='".$_SESSION['FYearId']."' and (c.ClaimId=e.ClaimId or e.ClaimId=0) and ".$ucond." and ".$ctcond." and e.ClaimStatus!='Deactivate' and ".$cscond." and ".$dtcond." group by e.CrBy, e.ClaimMonth order by e.BillDate ASC";  
+         
+       }
+       else
+       {
+         $q="SELECT e.*, c.ClaimName,h.EmpCode,h.Fname,h.Sname,h.Lname FROM `y".$_SESSION['FYearId']."_expenseclaims` e, claimtype c, ".dbemp.".hrm_employee h where h.EmployeeID=e.CrBy and e.ClaimYearId='".$_SESSION['FYearId']."' and (c.ClaimId=e.ClaimId or e.ClaimId=0) and ".$ucond." and ".$ctcond." and e.ClaimStatus!='Deactivate' and ".$cscond." and ".$dtcond." group by e.ExpId order by e.BillDate ASC";	
+        }
+         $seleq=mysql_query($q);
  //echo $q; die;
+      
  
   $i=1;
   while($exp=mysql_fetch_assoc($seleq))
@@ -50,8 +65,26 @@ if($_REQUEST['act']=='resultexp')
   $schema_insert = "";
   $schema_insert .= $i.$sep;	
   $schema_insert .= $exp['ExpId'].$sep;
-  $schema_insert .= $exp['ClaimName'].$sep;
+  
+  if($_REQUEST['ct']=='1920')
+  { $Clm='DA@ In/Out';}else{ $Clm=$exp['ClaimName']; }
+  
+  $schema_insert .= $Clm.$sep;
   $schema_insert .= $exp['Fname'].' '.$exp['Sname'].' '.$exp['Lname'].$sep;
+  $schema_insert .= $exp['EmpCode'].$sep;
+  
+  if($_REQUEST['ct']=='1920')
+  {
+   $schema_insert .= ''.$sep;
+   $schema_insert .= ''.$sep;
+   $schema_insert .= ''.$sep;
+   $schema_insert .= $exp['FillAmt'].$sep;
+   $schema_insert .= $exp['VeriAmt'].$sep;
+   $schema_insert .= $exp['AppAmt'].$sep;
+   $schema_insert .= $exp['PaidAmt'].$sep;
+  }
+  else
+  {
   $schema_insert .= $exp['CrDate'].$sep;
   $schema_insert .= $exp['BillDate'].$sep;
   $schema_insert .= $exp['FilledDate'].$sep;
@@ -65,8 +98,21 @@ if($_REQUEST['act']=='resultexp')
   $ii=''; if($exp['FinancedTAmt']!=0 && $exp['FinancedTAmt']>0 && $exp['FinancedTAmt']!='0000-00-00'){ $ii=$exp['FinancedTAmt']; }
   $schema_insert .= $ii.$sep;
   
+  }
+   $seleq2=mysql_query("SELECT Fin_PayDate FROM `y".$_SESSION['FYearId']."_monthexpensefinal` where EmployeeID=".$exp['CrBy']." and YearId='".$_SESSION['FYearId']."' and Month=".$exp['ClaimMonth']."");	
+   $exp2=mysql_fetch_assoc($seleq2);
+   
+  $schema_insert .= $exp2['Fin_PayDate'].$sep;
+  
   if($exp['ClaimStatus']=='Financed'){ $sts='Paid'; }else{ $sts=$exp['ClaimStatus']; }
   $schema_insert .= $sts.$sep;
+  
+  $len=strlen($exp['ClaimMonth']); 
+  if($len==1){ $Cm='0'.$exp['ClaimMonth'];}else{ $Cm=$exp['ClaimMonth'];}
+  
+  $Month=date("F",strtotime(date("Y-".$Cm."-d")));
+  
+  $schema_insert .= $Month.$sep;
   
    
   $schema_insert = str_replace($sep."$", "", $schema_insert);

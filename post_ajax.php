@@ -1,7 +1,7 @@
 <?php 
 // echo "heelll";die();
 
-
+date_default_timezone_set('Asia/Calcutta');
 
 session_start();
 // include 'config.php';

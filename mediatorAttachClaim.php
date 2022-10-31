@@ -90,12 +90,27 @@ if($_SESSION['EmpRole']=='E'){
 						<?php
 						$user=$crby;
 						$uY = "documents/".$_SESSION['FYearId'] ."/".$user."/";
-						$location=$uY;
+						$u2Y = "documents_old/".$_SESSION['FYearId'] ."/".$user."/";
+						$location=$uY; $location2=$u2Y;
+						
 						$eu=mysql_query("select * from y".$_SESSION['FYearId']."_claimuploads cu, y".$_SESSION['FYearId']."_expenseclaims e where cu.ExpId=e.ExpId and (e.ExpId=".$clm['ExpId']." or e.AttachTo=".$clm['ExpId'].") order by UploadSequence asc");
 						
 						while($eup=mysql_fetch_assoc($eu)){	
+						    
+						    
+		  if(file_exists($location.$eup['FileName'])){ ?> 
+		      
+		  <img id="img<?=$i?>" src="<?=$location.$eup['FileName']?>" style="vertical-align:top;margin-top:4px;height:50px;border:3px solid <?php if($i==1){echo '#eee';}else{echo '#4d4d4d';} ?>; cursor: pointer;" onclick="showimginbig('<?=$location.$eup['FileName']?>')">    
+		  <?php     
+		  } 
+          elseif(file_exists($location2.$eup['FileName'])){ ?> 
+              
+          <img id="img<?=$i?>" src="<?=$location2.$eup['FileName']?>" style="vertical-align:top;margin-top:4px;height:50px;border:3px solid <?php if($i==1){echo '#eee';}else{echo '#4d4d4d';} ?>; cursor: pointer;" onclick="showimginbig('<?=$location.$eup['FileName']?>')">      
+        <?php      
+          }
+						    
 							?>
-							<img id="img<?=$i?>" src="<?=$location.$eup['FileName']?>" style="vertical-align:top;margin-top:4px;height:50px;border:3px solid <?php if($i==1){echo '#eee';}else{echo '#4d4d4d';} ?>; cursor: pointer;" onclick="showimginbig('<?=$location.$eup['FileName']?>')">
+							
 							<?php
 						}
 						?>

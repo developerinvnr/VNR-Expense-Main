@@ -8,7 +8,27 @@ if(!isset($_SESSION['login'])){
 
 include 'config.php';
 
-if(isset($_COOKIE["login"]) && !empty($_COOKIE["login"]))
+if($_SESSION['EmpCode']>0)
+{
+$qry=mysql_query("select EmpStatus,DateOfSepration from hrm_employee where EmpCode=".$_SESSION['EmpCode']." and EmpStatus!='De' and CompanyId=".$_SESSION['CompanyId'],$con2); $rqry=mysql_fetch_assoc($qry);
+$DatAcc=date("Y-m-d",strtotime($rqry['DateOfSepration'].'+15 day'));
+ if($rqry['EmpStatus']=='A')
+ {
+  $num=1;       
+ }
+ elseif($rqry['EmpStatus']=='D' AND $DatAcc!='0000-00-00' && $DatAcc!='1970-01-01')
+ {
+  $run_qry=mysql_query("select * from hrm_employee where EmpCode=".$_SESSION['EmpCode']." and CompanyId=".$_SESSION['CompanyId']." and EmpStatus='D' AND '".date("Y-m-d")."'<='".$DatAcc."'",$con2);  
+  $num=mysql_num_rows($run_qry); 
+ }
+ else{ $num=0; }
+}
+else
+{
+ $num=1;   
+} 
+
+if(isset($_COOKIE["login"]) && !empty($_COOKIE["login"]) && $num==1)
 {
     
   $_SESSION['login']=$_COOKIE['login'];

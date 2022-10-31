@@ -58,12 +58,12 @@ $rp= mysql_query("SELECT EmployeeID from hrm_employee_reporting where AppraiserI
 ?>
   <tr>
    <td><?=$i?></td>
-   <td style=" text-align:left;"><a href="javascript:void(0)" onclick="showmonthdet('<?=$enumd['Month']?>','Open','<?=$enumd['CrBy']?>','Verified')"><?php $u=mysql_query("SELECT Fname,Sname,Lname FROM `hrm_employee` where EmployeeID=".$enumd['CrBy'],$con2); $un=mysql_fetch_assoc($u); echo $un['Fname'].' '.$un['Sname'].' '.$un['Lname']; ?></a></td>
-  <td><a href="javascript:void(0)" onclick="showmonthdet('<?=$enumd['Month']?>','Open','<?=$enumd['CrBy']?>','Verified')"><?=date('F', mktime(0,0,0,$enumd['Month'], 1, date('Y')));?></a></td>
+   <td style=" text-align:left;"><a href="javascript:void(0)" onclick="showmonthdet('<?=$enumd['Month']?>','Open','<?=$enumd['EmployeeID']?>','Verified')"><?php $u=mysql_query("SELECT Fname,Sname,Lname FROM `hrm_employee` where EmployeeID=".$enumd['EmployeeID'],$con2); $un=mysql_fetch_assoc($u); echo $un['Fname'].' '.$un['Sname'].' '.$un['Lname']; ?></a></td>
+  <td><a href="javascript:void(0)" onclick="showmonthdet('<?=$enumd['Month']?>','Open','<?=$enumd['EmployeeID']?>','Verified')"><?=date('F', mktime(0,0,0,$enumd['Month'], 1, date('Y')));?></a></td>
   <td>
   <?php if($enumd['Total_Claim']>0){ ?>	  
   <span class="btn btn-sm btn-outline-warning font-weight-bold"><?=$enumd['Total_Claim']?></span>
-  <input type="hidden" id="sts<?=$enumd['CrBy']?><?=$enumd['Month']?>Verified" value="close"> 
+  <input type="hidden" id="sts<?=$enumd['EmployeeID']?><?=$enumd['Month']?>Verified" value="close"> 
   <?php } ?>
   </td>
   
