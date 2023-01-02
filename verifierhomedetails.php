@@ -78,8 +78,9 @@ function FunChk(v){ $('#chkval').val(v); }
 function FselMonth()
 { 
  var chkval=$('#chkval').val(); var SelMonth =$('#SelMonth').val();
+ var SelVe =$('#SelVe').val();
  if(SelMonth==''){alert("please select month"); return false; }
- window.location="home.php?action=displayrec&v="+SelMonth+"&chkval="+chkval;
+ window.location="home.php?action=displayrec&v="+SelMonth+"&chkval="+chkval+"&ve="+SelVe; 
 }
 
 function FunPrint(e,m,y,n)
@@ -117,6 +118,23 @@ function ExpAP(v,m,e,y,t)
 	  <option value="04" <?php if($_REQUEST['v']==4){echo 'selected';}?>>April</option>
    </select>
    &nbsp;
+   <select style="font-size:14px; width:180px;" id="SelVe" >
+  <option value="0" <?php if($_REQUEST['ve']=='' || $_REQUEST['ve']==0){echo 'selected';}?>>All Employee</option>			  
+  <?php  
+  $seleqe=mysql_query("SELECT EmployeeID as CrBy FROM `y".$_SESSION['FYearId']."_monthexpensefinal` WHERE YearId=".$_SESSION['FYearId']." and `Status`='Closed' and Total_Claim>0 and (Verified_Amount=0 OR Verified_Date='0000-00-00') group by EmployeeID order by CrBy ASC"); //and g.CostCenter in (".$state_data.")
+
+  while($expe=mysql_fetch_assoc($seleqe))
+  { 
+
+   $senn=mysql_query("select EmpCode, Fname, Sname, Lname from hrm_employee where EmployeeID=".$expe['CrBy'],$con2); 
+   $expnn=mysql_fetch_assoc($senn);
+  ?>
+  <option value="<?=$expe['CrBy']?>" <?php if($_REQUEST['ve']==$expe['CrBy']){echo 'selected';}?>><?=$expnn['EmpCode'].' - '.$expnn['Fname'].' '.$expnn['Sname'].' '.$expnn['Lname']?></option>
+  <?php } //while ?>								  
+ </select>
+ &nbsp; 
+   
+   
    <a class="btn btn-sm btn-primary" onclick="FselMonth()"><i class="fa fa-btn" aria-hidden="true"></i><span style="color:#FFFFFF; width:80px;">&nbsp;&nbsp;&nbsp;Click&nbsp;&nbsp;&nbsp;</span></a>   
    &nbsp;&nbsp;&nbsp; 
    <a class="btn btn-sm btn-primary" href="javascript:location.reload(true)"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
@@ -126,7 +144,7 @@ function ExpAP(v,m,e,y,t)
 	 <br>
 	  <h5><small class="font-weight-bold text-muted">Pending Claims</small>
 	  &nbsp;&nbsp;
-	  <font style="font-size:14px;cursor:pointer;color:#0000FF;"><span onclick="ExpAP('A',<?=$_REQUEST['v'].','.$_SESSION['EmployeeID'].','.$_SESSION['FYearId'].','.$_REQUEST['chkval']?>)"><u>Export All</u></span></font></h5> 
+	  <font style="font-size:14px;cursor:pointer;color:#0000FF;"><span onclick="ExpAP('A',<?=$_REQUEST['v'].','.$_SESSION['EmployeeID'].','.$_SESSION['FYearId'].','.$_REQUEST['chkval']?>)"><u>Export All</u></span></font> </h5>
 							
 	  <table class="estable table shadow ">
 	  <thead class="thead-dark">
@@ -143,9 +161,11 @@ function ExpAP(v,m,e,y,t)
 	  </thead>
       <tbody>
 	  
-<?php if($_REQUEST['v']=='' || $_REQUEST['v']==0){ $cond='1=1'; }else{ $cond='Month='.$_REQUEST['v']; }
+<?php if($_REQUEST['v']=='' || $_REQUEST['v']==0){ $cond='1=1'; }else{ $cond='Month='.$_REQUEST['v']; } 
+if($_REQUEST['ve']>0){ $empQ="EmployeeID=".$_REQUEST['ve']; }
+else{ $empQ="1=1"; }
 				
-	  $sql_statement=mysql_query("SELECT * FROM `y".$_SESSION['FYearId']."_monthexpensefinal` WHERE YearId=".$_SESSION['FYearId']." and `Status`='Closed' and Total_Claim>0 and (Verified_Amount=0 OR Verified_Date='0000-00-00') and ".$cond." order by Month asc, EmployeeID asc"); //and DocateNo!=''			
+	  $sql_statement=mysql_query("SELECT * FROM `y".$_SESSION['FYearId']."_monthexpensefinal` WHERE YearId=".$_SESSION['FYearId']." and `Status`='Closed' and Total_Claim>0 and (Verified_Amount=0 OR Verified_Date='0000-00-00') and ".$empQ." and ".$cond." order by Month asc, EmployeeID asc"); //and DocateNo!=''			
 					
 $total_records = mysql_num_rows($sql_statement);
 if(isset($_GET['page']))
@@ -159,7 +179,7 @@ $from = ($page * $offset) - $offset;
 $from = 0;
 }					
 	  			//and DocateNo!=''
-      $m=mysql_query("SELECT * FROM `y".$_SESSION['FYearId']."_monthexpensefinal` WHERE YearId=".$_SESSION['FYearId']." and `Status`='Closed' and Total_Claim>0 and (Verified_Amount=0 OR Verified_Date='0000-00-00') and ".$cond." order by Month asc, EmployeeID asc LIMIT ".$from.",".$offset);  
+      $m=mysql_query("SELECT * FROM `y".$_SESSION['FYearId']."_monthexpensefinal` WHERE YearId=".$_SESSION['FYearId']." and `Status`='Closed' and Total_Claim>0 and (Verified_Amount=0 OR Verified_Date='0000-00-00') and ".$empQ." and ".$cond." order by Month asc, EmployeeID asc LIMIT ".$from.",".$offset);  
       $sn=1;
 	  while($mlist=mysql_fetch_assoc($m))
       {			
@@ -194,8 +214,8 @@ $from = 0;
 		</td>
 		<td style="vertical-align:middle;cursor:pointer;text-decoration:underline;">
 		  <span onclick="FUnOPen(<?=$sn?>)">
-		   <?php if($mlist['PostDate']!='0000-00-00' && $mlist['RecevingDate']=='0000-00-00'){ ?>Click
-		   <?php }elseif($mlist['PostDate']!='0000-00-00' && $mlist['RecevingDate']!='0000-00-00'){ ?>Recieved<?php } ?>
+		   <?php if($mlist['RecevingDate']=='0000-00-00'){ //$mlist['PostDate']!='0000-00-00' && ?>Click
+		   <?php }elseif($mlist['RecevingDate']!='0000-00-00'){ //$mlist['PostDate']!='0000-00-00' &&?>Recieved<?php } ?>
 		  </span>
 		</td>
       </tr>
@@ -217,8 +237,8 @@ $from = 0;
 	   <tr>
 	     <td style="text-align:right;">
 		 <font style="float:left;">&nbsp;<b>Agency:</b>&nbsp;<?php echo $mlist['Agency']; ?></font>
-		 <b>Verify Date</b></td>
-	     <td><div class="input-group date form_date col-md-12" data-date="" data-date-format="dd-mm-yyyy" data-link-field="VerifDate<?=$sn?>" data-link-format="dd-mm-yyyy" style="padding:0px;"><input id="VerifDate<?=$sn?>" style="font-family:Georgia;font-size:12px;width:100%; text-align:left;" value="<?php if($mlist['VerifDate']!='0000-00-00'){echo date("d-m-Y",strtotime($mlist['VerifDate'])); }else{echo date("d-m-Y"); }?>"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></div></td>
+		 <?php /*<b>Verify Date</b>*/ ?></td>
+	     <td><?php /*<div class="input-group date form_date col-md-12" data-date="" data-date-format="dd-mm-yyyy" data-link-field="VerifDate<?=$sn?>" data-link-format="dd-mm-yyyy" style="padding:0px;"><input id="VerifDate<?=$sn?>" style="font-family:Georgia;font-size:12px;width:100%; text-align:left;" value="<?php if($mlist['VerifDate']!='0000-00-00'){echo date("d-m-Y",strtotime($mlist['VerifDate'])); }else{echo date("d-m-Y"); }?>"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></div>*/?></td>
 	   </tr>
 	   <tr>  
 		<td style="text-align:right;"><b>Any Remark</b></td>
@@ -334,9 +354,9 @@ $from = 0;
         <tr>
          <td style="text-align:right;">
           <font style="float:left;">&nbsp;<b>Agency:</b>&nbsp;<?php echo $mlist['Agency']; ?></font>
-          <b>Verify Date</b>
+          <?php /*<b>Verify Date*/ ?></b>
          </td>
-         <td><div class="input-group date form_date col-md-12" data-date="" data-date-format="dd-mm-yyyy" data-link-field="VerifDate<?=$sn?>" data-link-format="dd-mm-yyyy" style="padding:0px;"><input id="VerifDate<?=$sn?>" style="font-family:Georgia;font-size:12px;width:100%; text-align:left;" value="<?php if($mlist['VerifDate']!='0000-00-00'){echo date("d-m-Y",strtotime($mlist['VerifDate'])); }else{echo date("d-m-Y"); }?>"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></div></td>
+         <td><?php /*<div class="input-group date form_date col-md-12" data-date="" data-date-format="dd-mm-yyyy" data-link-field="VerifDate<?=$sn?>" data-link-format="dd-mm-yyyy" style="padding:0px;"><input id="VerifDate<?=$sn?>" style="font-family:Georgia;font-size:12px;width:100%; text-align:left;" value="<?php if($mlist['VerifDate']!='0000-00-00'){echo date("d-m-Y",strtotime($mlist['VerifDate'])); }?>" readonly><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></div>*/ ?></td>
         </tr>
         <tr>  
          <td style="text-align:right;"><b>Any Remark</b></td>
@@ -408,9 +428,9 @@ function FunSave(sn,eid,m,yid)
    if(confirm('Are you sure?'))
    { 
      var rd=$('#RecevingDate'+sn).val(); 
-	 var vd=$('#VerifDate'+sn).val();
+	 //var vd=$('#VerifDate'+sn).val();
 	 var rmk=$('#DocRmk'+sn).val();
-	 $.post("courierajax.php",{act:"VerifyCourierDetails",sn:sn,eid:eid,m:m,yid:yid,rd:rd,vd:vd,rmk:rmk},function(data){
+	 $.post("courierajax.php",{act:"VerifyCourierDetails",sn:sn,eid:eid,m:m,yid:yid,rd:rd,rmk:rmk},function(data){
 	 if(data.includes('done')){ alert('Updated Successfully'); }else{ alert("Error"); }	});
    }
 }

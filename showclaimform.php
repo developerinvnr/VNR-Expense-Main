@@ -188,7 +188,10 @@ $depdate  = ($expf['Departure'] != '0000-00-00 00:00:00' && $expf['Departure'] !
 				<tr>
 				<th scope="row">Meal Plan</th>
 				<td><select type="text" class="form-control" name="MealPlan" value="<?=$expf['Plan']?>" readonly>
-				    <option value="AP">American Plan</option><option value="MAP">Modify American Plan</option><option value="EP">European plan</option><option value="CP">Continental plan</option></select>
+				    <option value="AP" <?php if($expf['Plan']=='AP'){echo 'selected';}?>>American Plan<?=$expf['Plan']?></option>
+				    <option value="MAP" <?php if($expf['Plan']=='MAP'){echo 'selected';}?>>Modify American Plan<?=$expf['Plan']?></option>
+				    <option value="EP" <?php if($expf['Plan']=='EP'){echo 'selected';}?>>European plan<?=$expf['Plan']?></option>
+				    <option value="CP" <?php if($expf['Plan']=='CP'){echo 'selected';}?>>Continental plan<?=$expf['Plan']?></option></select>
 				
 				</td>
 				<th scope="row">No. of pax</th>
@@ -3282,6 +3285,7 @@ $BillDate = ($exp['BillDate']  != '0000-00-00' && $exp['BillDate']  != '' ) ? da
 						<option value="Mustard">Mustard</option>
 						<option value="Pumpkin">Pumpkin</option>
 						<option value="Papaya">Papaya</option>
+						<option value="Onion">Onion</option>
 						<option value="Watermelon">Watermelon</option>
 					</select>
 				</td>
@@ -3562,6 +3566,7 @@ $BillDate = ($exp['BillDate']  != '0000-00-00' && $exp['BillDate']  != '' && $ex
 						<option value="Brinjal">Brinjal</option>
 						<option value="Cucumber">Cucumber</option>
 						<option value="Mustard">Mustard</option>
+						<option value="Onion">Onion</option>
 					</select>
 				</td>
 

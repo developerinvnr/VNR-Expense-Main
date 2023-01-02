@@ -168,6 +168,7 @@ date_default_timezone_set('Asia/Kolkata');
 	  <th rowspan="2" scope="col" style="width:30px;vertical-align:middle;">Total<br />Claim</th>
 	  <th rowspan="2" scope="col" style="width:50px;vertical-align:middle;">Amount<br />Claim</th>
 	  <th rowspan="2" scope="col" style="width:50px;vertical-align:middle;">Courier<br />Detail</th>
+	  <th rowspan="2" scope="col" style="width:50px;vertical-align:middle;">Courier<br />Received Date</th>
 	  
 	  <th colspan="2" scope="col" style="vertical-align:middle;">Verified</th>
 	  <th colspan="2" scope="col" style="vertical-align:middle;">Approved</th>
@@ -196,6 +197,9 @@ date_default_timezone_set('Asia/Kolkata');
 	<td><span class="btn btn-sm btn-outline-primary font-weight-bold"><?=$mlist['Total_Claim'];?></span></td>
 	<td><?php if($mlist['Claim_Amount']>0){echo intval($mlist['Claim_Amount']).'/-';} ?></td>
 	<td style="cursor:pointer;text-decoration:underline;"><span onclick="FUnOPen(<?=$sn?>)">click</span></td>
+	
+	<td style="width:50px;"><?php if($mlist['RecevingDate']!='0000-00-00' AND $mlist['RecevingDate']!='1970-01-01'){echo date("d-m-Y",strtotime($mlist['RecevingDate']));} ?></td>
+	
 	<td><?php if($mlist['Verified_Amount']>0){echo intval($mlist['Verified_Amount']).'/-';} ?></td>
 	<td><?php if($mlist['Verified_Amount']>0){echo date("d-m-y",strtotime($mlist['Verified_Date']));}?></td>
 	<td><?php if($mlist['Approved_Amount']>0){echo intval($mlist['Approved_Amount']).'/-';} ?></td>

@@ -43,7 +43,7 @@ if(isset($_POST['UpdateLodging']) || isset($_POST['draftLodging'])){
 		// echo $_POST['expfid'];
 
 		if(isset($_POST['expfid']) && $_POST['expfid']!=''){
-			$ins=mysql_query("UPDATE `y".$_SESSION['FYearId']."_g".$cgd['cgId']."_expensefilldata` SET `CityCategory`='".$_POST['CityCategory']."',`HotelName`='".$_POST['HotelName']."', `HotelAddress`='".$_POST['HotelAddress']."', `BillingName`='".$_POST['BillingName']."', `BillingAddress`='".$_POST['BillingAddress']."', `BillNo`='".$_POST['BillNo']."', `BillDate`='".$BillDate."', `Arrival`='".$arrdate."', `Departure`='".$depdate."', `StayDuration`='".$_POST['StayDuration']."', `RoomRateType`='".$_POST['RoomRateType']."',`Plan`='".$_POST['Plan']."',`NoOfPAX`='".$_POST['NoOfPAX']."',`GST`='".$_POST['GST']."',`BillingInstruction`='".$_POST['BillingInstruction']."' where did='".$_POST['expfid']."'");
+			$ins=mysql_query("UPDATE `y".$_SESSION['FYearId']."_g".$cgd['cgId']."_expensefilldata` SET `CityCategory`='".$_POST['CityCategory']."',`HotelName`='".$_POST['HotelName']."', `HotelAddress`='".$_POST['HotelAddress']."', `BillingName`='".$_POST['BillingName']."', `BillingAddress`='".$_POST['BillingAddress']."', `BillNo`='".$_POST['BillNo']."', `BillDate`='".$BillDate."', `Arrival`='".$arrdate."', `Departure`='".$depdate."', `StayDuration`='".$_POST['StayDuration']."', `RoomRateType`='".$_POST['RoomRateType']."',`Plan`='".$_POST['MealPlan']."',`NoOfPAX`='".$_POST['NoOfPAX']."',`GST`='".$_POST['GST']."',`BillingInstruction`='".$_POST['BillingInstruction']."' where did='".$_POST['expfid']."'");
 
 		}
 		

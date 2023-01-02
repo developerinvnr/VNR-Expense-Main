@@ -265,7 +265,7 @@ while($res2=mysql_fetch_assoc($sql2)){ ?>
 	  <th rowspan="2" scope="col" style="width:30px;vertical-align:middle;">Month</th>
 	  <th rowspan="2" scope="col" style="width:30px;vertical-align:middle;">Total<br />Claim</th>
 	  <th rowspan="2" scope="col" style="width:50px;vertical-align:middle;">Amount<br />Claim</th>
-	  <th rowspan="2" scope="col" style="width:50px;vertical-align:middle;">Courier<br />Detail</th>
+	  <th colspan="2" scope="col" style="width:50px;vertical-align:middle;">Courier Detail</th>
 	  
 	  <th colspan="2" scope="col" style="vertical-align:middle;">Verified</th>
 	  <th colspan="2" scope="col" style="vertical-align:middle;">Approved</th>
@@ -274,6 +274,8 @@ while($res2=mysql_fetch_assoc($sql2)){ ?>
 	  <th rowspan="2" scope="col" style="width:50px;vertical-align:middle;">Direct<br />Print</th>
 	</tr>
 	<tr style="height:25px;">
+	  <th scope="col" style="width:50px;vertical-align:middle;">Send</th>
+	  <th scope="col" style="width:60px;vertical-align:middle;">Received</th>
 	  <th scope="col" style="width:50px;vertical-align:middle;">Amount</th>
 	  <th scope="col" style="width:60px;vertical-align:middle;">Date</th>
 	  <th scope="col" style="width:50px;vertical-align:middle;">Amount</th>
@@ -295,6 +297,9 @@ while($res2=mysql_fetch_assoc($sql2)){ ?>
 	<td><span class="btn btn-sm btn-outline-primary font-weight-bold"><?=$mlist['Total_Claim'];?></span></td>
 	<td><?php if($mlist['Claim_Amount']>0){echo intval($mlist['Claim_Amount']).'/-';} ?></td>
 	<td style="cursor:pointer;text-decoration:underline;"><span onclick="FUnOPen(<?=$sn?>)">click</span></td>
+	
+	<td style="width:50px;"><?php if($mlist['RecevingDate']!='0000-00-00' AND $mlist['RecevingDate']!='1970-01-01'){echo date("d-m-Y",strtotime($mlist['RecevingDate']));} ?></td>
+	
 	<td style="width:50px;"><?php if($mlist['Verified_Amount']>0){echo intval($mlist['Verified_Amount']).'/-';} ?></td>
 	<td style="width:60px;"><?php if($mlist['Verified_Amount']>0){echo date("d-m-y",strtotime($mlist['Verified_Date']));}?></td>
 	<td style="width:50px;"><?php if($mlist['Approved_Amount']>0){echo intval($mlist['Approved_Amount']).'/-';} ?></td>
@@ -314,7 +319,7 @@ while($res2=mysql_fetch_assoc($sql2)){ ?>
    </tr>
    
    <tr>
-    <td colspan="6" style="width:100%;">
+    <td colspan="7" style="width:100%;">
 	 <div id="Div<?=$sn?>" style="display:none;">
 	  <table style="width:100%; vertical-align:top;" cellspacing="0">
 	   <tr>

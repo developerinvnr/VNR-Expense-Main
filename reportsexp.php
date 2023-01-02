@@ -10,7 +10,7 @@ if($_REQUEST['act']=='resultexp')
  header("Content-Type: application/xls");
  header("Content-Disposition: attachment; filename=$xls_filename");
  header("Pragma: no-cache"); header("Expires: 0"); $sep = "\t"; 
- echo "tSn\tClaim ID\tClaim Type\tEmployee\tEmpCode\tUpload Date\tBill Date\tFilled Date\tClaimed\tVerified\tApproved\tPaid\tPaid Date\tClaim Status\tClaim Month";
+ echo "tSn\tClaim ID\tClaim Type\tEmployee\tEmpCode\tUpload Date\tBill Date\tFilled Date\tClaimed\tVerified\tApproved\tPaid\tPaid Date\tClaim Status\tClaim Month\tMonth Name";
  print("\n");
  
  if(isset($_REQUEST['u']) && $_REQUEST['u']!='' && $_REQUEST['u']!='ALL')
@@ -107,11 +107,25 @@ if($_REQUEST['act']=='resultexp')
   if($exp['ClaimStatus']=='Financed'){ $sts='Paid'; }else{ $sts=$exp['ClaimStatus']; }
   $schema_insert .= $sts.$sep;
   
-  $len=strlen($exp['ClaimMonth']); 
-  if($len==1){ $Cm='0'.$exp['ClaimMonth'];}else{ $Cm=$exp['ClaimMonth'];}
+  //$len=strlen($exp['ClaimMonth']); 
+  //if($len==1){ $Cm='0'.$exp['ClaimMonth'];}else{ $Cm=$exp['ClaimMonth'];}
+  //$Month=date("F",strtotime(date("Y-".$Cm."-d")));
   
-  $Month=date("F",strtotime(date("Y-".$Cm."-d")));
+  $schema_insert .= $exp['ClaimMonth'].$sep;
   
+  if($exp['ClaimMonth']==1){$Month='January';}
+  elseif($exp['ClaimMonth']==2){$Month='February';}
+  elseif($exp['ClaimMonth']==3){$Month='March';}
+  elseif($exp['ClaimMonth']==4){$Month='April';}
+  elseif($exp['ClaimMonth']==5){$Month='May';}
+  elseif($exp['ClaimMonth']==6){$Month='June';}
+  elseif($exp['ClaimMonth']==7){$Month='July';}
+  elseif($exp['ClaimMonth']==8){$Month='August';}
+  elseif($exp['ClaimMonth']==9){$Month='September';}
+  elseif($exp['ClaimMonth']==10){$Month='October';}
+  elseif($exp['ClaimMonth']==11){$Month='November';}
+  elseif($exp['ClaimMonth']==12){$Month='December';}
+  else{$Month='';}
   $schema_insert .= $Month.$sep;
   
    

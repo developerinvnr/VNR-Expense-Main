@@ -10,8 +10,18 @@ include 'config.php';
 
 if($_SESSION['EmpCode']>0)
 {
-$qry=mysql_query("select EmpStatus,DateOfSepration from hrm_employee where EmpCode=".$_SESSION['EmpCode']." and EmpStatus!='De' and CompanyId=".$_SESSION['CompanyId'],$con2); $rqry=mysql_fetch_assoc($qry);
-$DatAcc=date("Y-m-d",strtotime($rqry['DateOfSepration'].'+15 day'));
+$qry=mysql_query("select EmployeeID,EmpStatus,DateOfSepration from hrm_employee where EmpCode=".$_SESSION['EmpCode']." and EmpStatus!='De' and CompanyId=".$_SESSION['CompanyId'],$con2); $rqry=mysql_fetch_assoc($qry);
+if($rqry['EmpStatus']=='D' AND $rqry['DateOfSepration']>='2022-05-01')
+ {
+  $DatAcc=date("Y-m-d",strtotime($rqry['DateOfSepration'].'+15 day'));
+ }
+ else
+ {
+  $qryV=mysql_query("select Emp_RelievingDate from hrm_employee_separation where EmployeeID=".$rqry['EmployeeID'],$con2); $rqryV=mysql_fetch_assoc($qryV); 
+  $DatAcc=date("Y-m-d",strtotime($rqryV['Emp_RelievingDate'].'+15 day'));    
+ }
+
+
  if($rqry['EmpStatus']=='A')
  {
   $num=1;       

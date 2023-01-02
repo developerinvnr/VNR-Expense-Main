@@ -30,8 +30,9 @@ elseif($_REQUEST['nn']==2){$sqry='FilledOkay=1'; $ssqry='clm.FilledOkay=1';} ?>
 
 <?php $m=mysql_query("SELECT * FROM `y".$_REQUEST['y']."_monthexpensefinal` WHERE YearId=".$_REQUEST['y']." AND Month=".$_REQUEST['m']." AND EmployeeID=".$_REQUEST['e']); $mlist=mysql_fetch_assoc($m); 
 
-$ed=mysql_query("SELECT DepartmentCode,StateName,EmpVertical FROM `hrm_employee` e inner join hrm_employee_general g on e.EmployeeID=g.EmployeeID inner join hrm_department d on g.DepartmentId=d.DepartmentId inner join hrm_state s on g.CostCenter=s.StateId where e.EmployeeID=".$_REQUEST['e'], $con2); $red=mysql_fetch_assoc($ed);
+$ed=mysql_query("SELECT g.DepartmentId,g.HqId,DepartmentCode,StateName,EmpVertical,HqName FROM `hrm_employee` e inner join hrm_employee_general g on e.EmployeeID=g.EmployeeID inner join hrm_department d on g.DepartmentId=d.DepartmentId inner join hrm_state s on g.CostCenter=s.StateId inner join hrm_headquater hq on g.HqId=hq.HqId where e.EmployeeID=".$_REQUEST['e'], $con2); $red=mysql_fetch_assoc($ed);
 if($red['EmpVertical']>0){ $sV=mysql_query("select VerticalName from hrm_department_vertical where VerticalId=".$red['EmpVertical'],$con2);$rV=mysql_fetch_assoc($sV);  }
+
 	
 //$sTot=mysql_query("SELECT count(*) as TotClaim, SUM(FilledTAmt) as TotClamAmt FROM `y".$_REQUEST['y']."_expenseclaims` WHERE `ClaimYearId`='".$_REQUEST['y']."' and `CrBy`='".$_REQUEST['e']."' and ClaimMonth='".$_REQUEST['m']."' and ".$sqry." and ClaimStatus!='Deactivate' and ClaimStatus!='Draft' and FilledBy>0"); $rTot=mysql_fetch_assoc($sTot); ?>
 
@@ -42,9 +43,17 @@ if($red['EmpVertical']>0){ $sV=mysql_query("select VerticalName from hrm_departm
 <tr>
  <td style="width:92%;text-align:center; font-size:20px;">
   <font style="font-size:18px;color:#F20000;"><b>Expense Details ( <?=date('F', mktime(0,0,0,$mlist['Month'], 1, date('Y'))).'/'.$ry['Year'].'';?> )</b></font><br />
-  Claimer:&nbsp;<b><?=getUser($mlist['EmployeeID'])?></b><br />
-  <b>(<?=$red['DepartmentCode'].' / '.ucwords(strtolower($red['StateName']))?>) <?php if($rV['VerticalName']!=''){ echo ' - '.$rV['VerticalName']; }?> </b><br />
-  Total Amount:&nbsp;<b><?=floatval($mlist['Claim_Amount']).'/-';?></b>
+  <b>Claimer:</b>&nbsp;<?=getUser($mlist['EmployeeID'])?><br />
+  <b>(<?=ucwords(strtolower($red['DepartmentCode'])); ?><?php if($rV['VerticalName']!=''){ echo ' - '.$rV['VerticalName']; }?>)</b><br>
+  
+<?php $sqlRId=mysql_query("select RegionId from hrm_sales_verhq where HqId=".$red['HqId']." AND Vertical=".$red['EmpVertical']." AND DeptId=".$red['DepartmentId'], $con2); $resRId=mysql_fetch_assoc($sqlRId);
+$sqlRR=mysql_query("select RegionName,ZoneId from hrm_sales_region where RegionId=".$resRId['RegionId'], $con2); $resRR=mysql_fetch_assoc($sqlRR);
+$sqlZZ=mysql_query("select ZoneName from hrm_sales_zone where ZoneId=".$resRR['ZoneId'], $con2); $resZZ=mysql_fetch_assoc($sqlZZ); ?>
+  
+  <b>HQ:&nbsp;</b><?=ucwords(strtolower($red['HqName']))?>&nbsp;,&nbsp;<b>State:&nbsp;</b><?=ucwords(strtolower($red['StateName']))?><?php if($red['DepartmentId']==6){?>&nbsp;,&nbsp;<b>Region:&nbsp;</b><?=ucwords(strtolower($resRR['RegionName']))?>&nbsp;,&nbsp;<b>Zone:&nbsp;</b><?=ucwords(strtolower($resZZ['ZoneName']))?><br><?php } ?>
+  
+  
+  <b>Total Amount:&nbsp;</b><?=floatval($mlist['Claim_Amount']).'/-';?>
  <?php /*?>&nbsp;&nbsp;<b>Total Claim</b>:&nbsp;<?=$rTot['TotClaim'];?><?php */?>
  </td>
  <td style="width:8%;text-align:right;">

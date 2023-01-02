@@ -16,8 +16,16 @@ if($_POST['empcode']>0 AND (is_numeric($_POST['empcode'])))
  $emppass=$_POST['emppass'];
  
  /***********************/
- $qry=mysql_query("select EmpStatus,DateOfSepration from hrm_employee where EmpCode='$empcode' and EmpStatus!='De' and CompanyId=".$_POST['empcompany'],$con2); $rqry=mysql_fetch_assoc($qry);
- $DatAcc=date("Y-m-d",strtotime($rqry['DateOfSepration'].'+15 day'));
+ $qry=mysql_query("select EmployeeID,EmpStatus,DateOfSepration from hrm_employee where EmpCode='$empcode' and EmpStatus!='De' and CompanyId=".$_POST['empcompany'],$con2); $rqry=mysql_fetch_assoc($qry);
+ if($rqry['EmpStatus']=='D' AND $rqry['DateOfSepration']>='2022-05-01')
+ {
+  $DatAcc=date("Y-m-d",strtotime($rqry['DateOfSepration'].'+15 day'));
+ }
+ else
+ {
+  $qryV=mysql_query("select Emp_RelievingDate from hrm_employee_separation where EmployeeID=".$rqry['EmployeeID'],$con2); $rqryV=mysql_fetch_assoc($qryV); $DatAcc=date("Y-m-d",strtotime($rqryV['Emp_RelievingDate'].'+15 day'));    
+ }
+ 
  
  if($rqry['EmpStatus']=='A')
  {  

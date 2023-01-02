@@ -10,7 +10,9 @@ if($_POST['act']=='upcourierdetails')
 
 elseif($_POST['act']=='VerifyCourierDetails')
 { 
-  $up=mysql_query("update y".$_POST['yid']."_monthexpensefinal set RecevingDate='".date("Y-m-d",strtotime($_POST['rd']))."', VerifDate='".date("Y-m-d",strtotime($_POST['vd']))."', DocRmk='".$_POST['rmk']."' where EmployeeID=".$_POST['eid']." AND Month=".$_POST['m']." AND YearId=".$_POST['yid'],$con);
+  $up=mysql_query("update y".$_POST['yid']."_monthexpensefinal set RecevingDate='".date("Y-m-d",strtotime($_POST['rd']))."',  DocRmk='".$_POST['rmk']."' where EmployeeID=".$_POST['eid']." AND Month=".$_POST['m']." AND YearId=".$_POST['yid'],$con);
   if($up){echo 'done';}else{echo 'error';}
 }
+
+//VerifDate='".date("Y-m-d",strtotime($_POST['vd']))."',
 ?>

@@ -139,7 +139,7 @@ function vehTypeSel(th,di,slb,ei,y1,y2)
 	{
 	
 	 var bd = $("#BillDate1").val();
-	 $.post("mappingslabajax.php",{act:"CheckKM",slb:slb,ei:ei,bd:bd,th:th,y1:y1,y2:y2,rate:rate},function(data){ //alert(data);
+	 $.post("mappingslabajax.php",{act:"CheckKM",slb:slb,ei:ei,bd:bd,th:th,y1:y1,y2:y2,rate:rate},function(data){ //if(ei==34){ alert(data); }
 	 
 	 //FUnPut(data,vehtype);
 	 

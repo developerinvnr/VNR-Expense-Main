@@ -121,6 +121,7 @@ elseif($_POST['act']=='CheckKM' && $_POST['slb']>0 && $_POST['ei']>0 && $_POST['
   elseif($totKm>=$res['Slab4_f'] && $totKm<=$res['Slab4_t']){ $rate=$res['Slab4_rate']; }
   else{ $rate=$_POST['rate']; }
    
+   //echo 'aa2='.$rate;
  }
  else{ $rate=$_POST['rate']; }
  
